@@ -5,6 +5,7 @@ from scipy.special import comb
 import random
 import sys
 import configparser
+from matplotlib.lines import Line2D
 import time
 
 # ------------
@@ -203,22 +204,26 @@ else:
 
 fig.set_size_inches(12, 6)
 
+customLines = []
 for i in range(0, s):
+    cmap = plt.get_cmap("tab10")
+    #creates colours for legend
+    customLines.append(Line2D([0],[0],color=cmap(i)))
+
     if averages:
-        ax1.plot(processedData[0][0], processedData[0][i + 1])
+        ax1.plot(processedData[0][0], processedData[0][i + 1], color = cmap(i))
     if deviations:
         ax1.fill_between(processedData[0][0], processedData[0][i + 1] + processedData[1][i + 1],
-                         processedData[0][i + 1] - processedData[1][i + 1], alpha=0.5)
+                         processedData[0][i + 1] - processedData[1][i + 1], alpha=0.5, color = cmap(i))
     if scatter:
-        ax1.scatter(data[0], data[i + 1], s=5, alpha=0.03)
+        ax1.scatter(data[0], data[i + 1], s=5, alpha=0.03, color = cmap(i))
 
-    cmap = plt.get_cmap("tab10")
     for m in range(0, lines):
-        for i in range(0, s):
-            ax1.plot(rawData[m][0], rawData[m][i + 1], color=cmap(i), alpha=0.5)
-    ax1.set(xlabel="Time", ylabel='Number of molecules')
-    ax1.legend(varNames)
-    ax1.set_title('Runs: ' + str(runs) + '     Seed used: ' + str(seed))
+        ax1.plot(rawData[m][0], rawData[m][i + 1], color=cmap(i), alpha=0.7)
+
+ax1.legend(customLines, varNames)
+ax1.set(xlabel="Time", ylabel='Number of molecules')
+ax1.set_title('Runs: ' + str(runs) + '     Seed used: ' + str(seed))
 
 if histogramAmounts:
     for i in range(0, s):
