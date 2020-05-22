@@ -17,7 +17,7 @@ c = 0.1, 0.01, 1
 
 stoichR = 1, 1, 0, 0,   0, 0, 1, 0,    0, 0, 1, 0
 stoichP = -1, -1, 1, 0,    1, 1, -1, 0,     0, 1, -1, 1
-n0 = 20., 6., 0., 0.
+n0 = 60., 18., 0., 0.
 
 
 # Tf - scalar - final time
@@ -25,7 +25,7 @@ n0 = 20., 6., 0., 0.
 # should be larger than the time needed to reach Tf
 # runs - number of runs to simulate
 
-Tf = 80
+Tf = 6
 maxEvents = 10000
 runs = 200
 
@@ -43,7 +43,7 @@ seed = -1
 # as not many runs reach that far
 averages = True
 segmentCount = 50
-percent = 99
+percent = 99.5
 
 # draw the standard deviation shadow
 deviations = True
@@ -53,6 +53,11 @@ scatter = False
 
 # draw individual runs as lines
 lines = 1
+
+# boolean - draw histogram of amounts at the end of the simulations
+histogramAmounts = True
+# scalar - number of bins for each species, all separated by commas
+bincounts = 5, 5, 5, 5
 
 #save to its own png file? name is the seed used. Saved to a folder called 'Images' in the same directory
 save = True
