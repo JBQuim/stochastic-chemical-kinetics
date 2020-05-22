@@ -81,3 +81,31 @@ Finally, to save as png file set `save = True`.
 If everything's right, for this system you might get something like this:
 
 <img src = "Examples/sequential.png">
+
+## Theory
+
+The method used to simulate the time evolution of the system is as follows. Every event j (reaction) is given a propensity, `aⱼ`. Events have no memory and so are exponentially distrubuted in time with probability density function `exp(-aⱼt)`. i.e. the time til the next event `j`, `Tⱼ`, is given by `P(Tⱼ>t) = exp(-aⱼt)`. A more intuitive view of the propensity can be arrived at by looking at `Tⱼ` when taking a small timestep `Δt`. 
+
+`P(Tⱼ>Δt) = exp(-aⱼΔt)`
+
+Then by Taylor expansion:
+```
+P(Tⱼ>Δt) = exp(-aⱼΔt) = 1-aⱼΔt + ...
+
+which implies
+
+P(Tⱼ≤Δt) = aⱼΔt
+```
+for very small `Δt`. The propensity can therefore be taken as the probability per unit of time of a given event happening.
+
+The Gillepsie algorithm is what's used to simulate the time evolution of the system. It goes as follows:
+
+1. Initialize the system with the starting conditions
+2. Calculate the propensity of each reaction
+3. Find the time til next reaction and decide which reaction occurs
+4. Update the simulation according to the effects of the chosen reaction
+5. If the final time has not been reached, return to step 2.
+
+Step 3 could be performed by computing `Tⱼ`, by drawing a random number from `exp(-aⱼΔt)`. If done for every event, then the event with the lowest `Tⱼ` occurs. The approach taken here is different, as it requires less numbers to be randomly generated. Let `a₀` be the propensity that *any* event occurs. It is simply the sum of the propensities of all events. We generate the time til next event using this propensity. Then we choose which event occured, given the time til next reaction. This is done by realizing that `P(Event J) = aⱼ/a₀`. This method then requires the generation of only two random numbers.
+
+For more information regarding Gillepsie's algorith, other algorithms and further theory on stochastic chemical kinetics refer to "Stochastic Approaches for Systems Biology".
