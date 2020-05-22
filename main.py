@@ -1,10 +1,11 @@
 import matplotlib.pyplot as plt
 import math
 import numpy as np
-import scipy.special
+from scipy.special import comb
 import random
 import sys
 import configparser
+import time
 
 # ------------
 # reading from config.txt
@@ -59,6 +60,8 @@ binCount = np.array(list(map(int, config['parameters']['bincounts'].split(',')))
 
 # number of individual runs to draw
 lines = int(config['parameters']["lines"])
+if lines > runs: lines = runs
+if lines == -1: lines = runs
 
 # save image or not?
 save = config['parameters'].getboolean('save')
@@ -70,30 +73,20 @@ save = config['parameters'].getboolean('save')
 
 # calculates propensities from stochastic rate constants and n
 def calcPropensities(number):
-    # h[j] is the number of combinations of the Rj reactant molecules
-    # h[j] is the product of all the indexes of y
-    h = np.zeros(r)
-    for j in range(0, r):
-        y = np.zeros(s)
-        for u in range(0, s):
-            if stoichR[j][u] > number[u]:
-                y[u] = 0
-            else:
-                y[u] = scipy.special.comb(number[u], stoichR[j][u])
-        h[j] = np.prod(y)
-
-    return c * h
+    # h is the number of combinations of the Rj reactant molecules
+    # h is the product of all the indexes of y for every reaction
+    number = number[:, None]
+    y = comb(number, stoichR.T).T
+    h = np.prod(y, axis=1)
+    return h * c
 
 
-# returns the value of j for which a_j-1/a0 < u2 < a_j/a0
+# chooses an integer between 0 and r, weighted according to propensities
 def chooseReaction(a, a0):
-    u2 = random.random()
-    for j in range(0, r):
-        u2 -= a[j] / a0
-        if u2 <= 0:
-            return j
+    return np.random.choice(range(0, r), p=a / a0)
 
-def runSim(finalTime, finalEvents, initialN):
+
+def runSim(finalTime, finalEvents, initialN, randomNumbers):
     # initialize simulation variables
     t = 0.0
     n = initialN
@@ -113,7 +106,7 @@ def runSim(finalTime, finalEvents, initialN):
             break
 
         # tau is the time to next reaction and is exponentially distributed
-        u1 = random.random()
+        u1 = randomNumbers[eventCount]
         tau = -math.log(u1) / a0
         t += tau
         if t > finalTime:
@@ -126,7 +119,8 @@ def runSim(finalTime, finalEvents, initialN):
 
         history[eventCount] = np.insert(n, 0, t)
 
-    return history
+    # eventCount is used to keep track of how many random numbers were used
+    return history, eventCount
 
 
 # takes in the data from various runs, splits into segments and finds the mean and stdev of each segment
@@ -153,16 +147,18 @@ def splitData(values, varNumber, segmentNumber, percentile):
 
     return means, stdDevs
 
+
 # generate dataset of the final state of each variable, for histogram generation
 def getEndings(values, runCount, varNumber):
-    endings = np.full((runCount, varNumber+1), 0)
+    endings = np.full((runCount, varNumber + 1), 0)
 
-    for h in range(0,runCount):
-        #data without nan
+    for h in range(0, runCount):
+        # data without nan
         refinedData = values[h].T[~np.isnan(values[h][0])]
         endings[h] = refinedData[-1]
 
     return endings.T
+
 
 # -------------
 # initialize system
@@ -180,8 +176,14 @@ random.seed(seed)
 
 # save every run to an array
 rawData = np.zeros((runs, s + 1, maxEvents))
+# generate random numbers
+randomData = np.random.rand(maxEvents*runs)
+numbersUsed = 0
 for d in range(0, runs):
-    rawData[d] = runSim(Tf, maxEvents, n0).T
+    data, used = runSim(Tf, maxEvents, n0, randomData[numbersUsed:numbersUsed+maxEvents])
+    rawData[d] = data.T
+    numbersUsed += used
+    print("Run " + str(d+1) + " completed")
 
 # generate histogram
 if histogramAmounts:
@@ -195,9 +197,9 @@ processedData = splitData(data, s, segmentCount, percent)
 
 # plot results
 if histogramAmounts:
-    fig, (ax1,ax2) = plt.subplots(1,2,sharey=True,gridspec_kw={'width_ratios': [3, 1]})
+    fig, (ax1, ax2) = plt.subplots(1, 2, sharey=True, gridspec_kw={'width_ratios': [3, 1]})
 else:
-    fig, ax1 = plt.subplots(1,1)
+    fig, ax1 = plt.subplots(1, 1)
 
 fig.set_size_inches(12, 6)
 
@@ -213,17 +215,15 @@ for i in range(0, s):
     cmap = plt.get_cmap("tab10")
     for m in range(0, lines):
         for i in range(0, s):
-            ax1.plot(rawData[m][0], rawData[m][i + 1], color=cmap(i),alpha=0.5)
-    ax1.set(xlabel = "Time",ylabel = 'Number of molecules')
+            ax1.plot(rawData[m][0], rawData[m][i + 1], color=cmap(i), alpha=0.5)
+    ax1.set(xlabel="Time", ylabel='Number of molecules')
     ax1.legend(varNames)
     ax1.set_title('Runs: ' + str(runs) + '     Seed used: ' + str(seed))
 
-
 if histogramAmounts:
-    for i in range(0,s):
-        ax2.hist(histogramData[i+1], binCount[i],orientation="horizontal",alpha=0.8)
+    for i in range(0, s):
+        ax2.hist(histogramData[i + 1], binCount[i], orientation="horizontal", alpha=0.8)
     ax2.set_title('Final conditions over all the runs')
-
 
 if save:
     plt.savefig('Images\\' + str(seed) + '.png')
