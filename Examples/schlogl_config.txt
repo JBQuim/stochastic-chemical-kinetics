@@ -19,15 +19,13 @@ stoichR =  2,   3,    0,   1
 stoichP = 1,  -1,   1,    -1
 n0 = 250
 
-
 # Tf - scalar - final time
 # maxEvents - scalar - number of events at which the simulation will be terminated
-# should be larger than the time needed to reach Tf
 # runs - number of runs to simulate
 
 Tf = 6
 maxEvents = 100000
-runs = 10
+runs = 100
 
 # set seed = -1 for a random seed
 seed = -1
@@ -37,7 +35,7 @@ seed = -1
 #------------
 
 
-# draw the average run
+# boolean - draw the average run?
 # segmentCount - scalar - number of segments x axis is divided into
 # percent - scalar - percent of the longest run to graph, ends of 100% can be noisy
 # as not many runs reach that far
@@ -45,19 +43,19 @@ averages = False
 segmentCount = 50
 percent = 99.9
 
-# draw the standard deviation shadow
+# boolean - draw the standard deviation shadow
 deviations = False
 
-# draw all the points  across all runs
+# boolean - draw all the points  across all runs
 scatter = False
 
-# draw individual runs as lines
-lines = 10
+# scalar - draws this many lines, if -1, it draws all lines
+lines = 40
 
-# draw histogram of amounts at the end of the simulations
+# boolean - draw histogram of amounts at the end of the simulations
 histogramAmounts = True
-# number of bins for each species, all separated by commas
+# scalar - number of bins for each species, all separated by commas
 bincounts = 40
 
-#save to its own png file? name is the seed used. Saved to a folder called 'Images' in the same directory
+# boolean - save to its own png file? name is the seed used. Saved to a folder called 'Images' in the same directory
 save = True
