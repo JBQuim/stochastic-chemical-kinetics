@@ -183,7 +183,7 @@ for d in range(0, runs):
     data, used = runSim(Tf, maxEvents, n0, randomData[numbersUsed:numbersUsed+maxEvents])
     rawData[d] = data.T
     numbersUsed += used
-    print("Run " + str(d+1) + " completed")
+    print("Run " + str(d+1) + "/" + str(runs) + "completed")
 
 # generate histogram
 if histogramAmounts:
