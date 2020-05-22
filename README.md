@@ -86,10 +86,9 @@ If everything's right, for this system you might get something like this:
 
 The method used to simulate the time evolution of the system is as follows. Every event j (reaction) is given a propensity, `aⱼ`. Events have no memory and so are exponentially distrubuted in time with probability density function `exp(-aⱼt)`. i.e. the time til the next event `j`, `Tⱼ`, is given by `P(Tⱼ>t) = exp(-aⱼt)`. A more intuitive view of the propensity can be arrived at by looking at `Tⱼ` when taking a small timestep `Δt`. 
 
-`P(Tⱼ>Δt) = exp(-aⱼΔt)`
+``` 
+P(Tⱼ>Δt) = exp(-aⱼΔt)`
 
-Then by Taylor expansion:
-```
 P(Tⱼ>Δt) = exp(-aⱼΔt) = 1-aⱼΔt + ...
 
 which implies
