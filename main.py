@@ -72,6 +72,23 @@ save = config['parameters'].getboolean('save')
 # declaring functions
 # -----------------
 
+def checkError():
+    # not an exhaustive list of all possible errors in config file, but a list of the common ones
+    error = "Starting..."
+    if np.shape(stoichP) != np.shape(stoichR):
+        error = "stoichP and stoichR must be the same size"
+    elif s != len(binCount):
+        error = "bincounts must be same size as varNames"
+    elif s != len(n0):
+        error = "n0 must be same size as varNames"
+    elif not 100 >= percent >= 0:
+        error = "percent must be between 0 and 100"
+    elif lines == 0 and ~scatter and ~deviations and ~averages:
+        error = "Must choose whether to graph lines, deviations, averages or scatter graph"
+    print(error)
+    if error != "Starting...": quit()
+
+
 # calculates propensities from stochastic rate constants and n
 def calcPropensities(number):
     # h is the number of combinations of the Rj reactant molecules
@@ -176,15 +193,16 @@ random.seed(seed)
 # ----------
 
 # save every run to an array
+checkError()
 rawData = np.zeros((runs, s + 1, maxEvents))
 # generate random numbers
-randomData = np.random.rand(maxEvents*runs)
+randomData = np.random.rand(maxEvents * runs)
 numbersUsed = 0
 for d in range(0, runs):
-    data, used = runSim(Tf, maxEvents, n0, randomData[numbersUsed:numbersUsed+maxEvents])
+    data, used = runSim(Tf, maxEvents, n0, randomData[numbersUsed:numbersUsed + maxEvents])
     rawData[d] = data.T
     numbersUsed += used
-    print("Run " + str(d+1) + "/" + str(runs) + " completed")
+    print("Run " + str(d + 1) + "/" + str(runs) + " completed")
 
 # generate histogram
 if histogramAmounts:
@@ -207,16 +225,16 @@ fig.set_size_inches(12, 6)
 customLines = []
 for i in range(0, s):
     cmap = plt.get_cmap("tab10")
-    #creates colours for legend
-    customLines.append(Line2D([0],[0],color=cmap(i)))
+    # creates colours for legend
+    customLines.append(Line2D([0], [0], color=cmap(i)))
 
     if averages:
-        ax1.plot(processedData[0][0], processedData[0][i + 1], color = cmap(i))
+        ax1.plot(processedData[0][0], processedData[0][i + 1], color=cmap(i))
     if deviations:
         ax1.fill_between(processedData[0][0], processedData[0][i + 1] + processedData[1][i + 1],
-                         processedData[0][i + 1] - processedData[1][i + 1], alpha=0.5, color = cmap(i))
+                         processedData[0][i + 1] - processedData[1][i + 1], alpha=0.5, color=cmap(i))
     if scatter:
-        ax1.scatter(data[0], data[i + 1], s=5, alpha=0.03, color = cmap(i))
+        ax1.scatter(data[0], data[i + 1], s=5, alpha=0.03, color=cmap(i))
 
     for m in range(0, lines):
         ax1.plot(rawData[m][0], rawData[m][i + 1], color=cmap(i), alpha=0.7)
