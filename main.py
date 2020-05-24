@@ -6,7 +6,7 @@ import random
 import sys
 import configparser
 from matplotlib.lines import Line2D
-import time
+import os
 
 # ------------
 # reading from config.txt
@@ -26,8 +26,9 @@ import time
 # maxEvents - scalar - number of events at which the simulation will be terminated
 # should be larger than the time needed to reach Tf
 
+path = '/'.join((os.path.abspath(__file__).replace('\\', '/')).split('/')[:-1])
 config = configparser.ConfigParser()
-config.read('config.txt')
+config.read(os.path.join(path,'config.txt'))
 
 varNames = np.array(config['parameters']['varNames'].split(','))
 c = np.array(list(map(float, config['parameters']['c'].split(','))))
