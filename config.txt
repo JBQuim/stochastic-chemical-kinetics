@@ -54,5 +54,10 @@ scatter = False
 # draw individual runs as lines
 lines = 1
 
+# boolean - draw histogram of amounts at the end of the simulations
+histogramAmounts = True
+# scalar - number of bins for each species, all separated by commas
+bincounts = 5, 5, 5, 5
+
 #save to its own png file? name is the seed used. Saved to a folder called 'Images' in the same directory
 save = True
