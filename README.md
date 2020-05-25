@@ -76,7 +76,7 @@ Individual runs can be plotted by setting `lines` to some number. If `-1`, all t
 
 To plot a histogram of the final states set `histogramAmounts = True`. The amount of bins for each species must be provided separated by commas.
 
-Finally, to save as png file set `save = True`.
+Finally, to save as png file set `save = True`. Note it'll need a folder called `Images` to save to.
 
 If everything's right, for this system you might get something like this:
 
