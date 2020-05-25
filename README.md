@@ -68,7 +68,7 @@ The results of the various simulations that have been run can be displayed in va
 
 All these options can be combined to achieve the graphs seen before.
 
-To graph the average of all runs, set `averages = True`. Each run will be divided into an amount of segments, `segmentCount`, and then a line plotted with the average of every segment across. Because only a few runs reach the very extremes in time, changing `percent` lets you take the average only for some percentage of the longest run. If at 100%, the ends of the average can be fairly noisy, due to only very few runs having gotten that far. By setting `deviations = True`, the standard deviation will be plotted as a shadow.
+To graph the average of all runs, set `averages = True`. `segmentCount` is the number of samples per run, taken when doing the average. Because only a few runs reach the very extremes in time, changing `percent` lets you take the average only for some percentage of the longest run. If at 100%, the ends of the average can be fairly noisy, due to only very few runs having gotten that far. By setting `deviations = True`, the standard deviation will be plotted as a shadow.
 
 To plot a scatter graph set `scatter = True`.
 
