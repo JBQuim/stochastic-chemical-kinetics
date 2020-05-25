@@ -1,0 +1,6 @@
+List of improvements that could be done:
+- reading config from json file is perhaps easier
+- runtime arguments for faster changes
+- correct the way averages are taken
+- add more config parsing error flags
+- make input be kinetic rate constants, and calculate stochastic rate constants from system size
