@@ -108,3 +108,6 @@ The Gillepsie algorithm is what's used to simulate the time evolution of the sys
 Step 3 could be performed by computing `Tⱼ`, by drawing a random number from `exp(-aⱼΔt)`. If done for every event, then the event with the lowest `Tⱼ` occurs. The approach taken here is different, as it requires less numbers to be randomly generated. Let `a₀` be the propensity that *any* event occurs. It is simply the sum of the propensities of all events. We generate the time til next event using this propensity. Then we choose which event occured, given the time til next reaction. This is done by realizing that `P(Event J) = aⱼ/a₀`. This method then requires the generation of only two random numbers.
 
 For more information regarding Gillepsie's algorith, other algorithms and  a more exhaustive treatment of the theory of stochastic chemical kinetics refer to "Stochastic Approaches for Systems Biology".
+
+# Improvements
+Reading config from json file is perhaps easier to implement and for the user. Runtime arguments would allow easier tinkering. Averages are currently potentially taken in the wrong way. More config parsing error flags could be implemented to avoid user error. Make input be kinetic rate constants, and calculate stochastic rate constants from system size.
