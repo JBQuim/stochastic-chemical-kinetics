@@ -109,5 +109,5 @@ Step 3 could be performed by computing `Tⱼ`, by drawing a random number from `
 
 For more information regarding Gillepsie's algorith, other algorithms and  a more exhaustive treatment of the theory of stochastic chemical kinetics refer to "Stochastic Approaches for Systems Biology".
 
-# Improvements
+## Future Improvements
 Reading config from json file is perhaps easier to implement and for the user. Runtime arguments would allow easier tinkering. Averages are currently potentially taken in the wrong way. More config parsing error flags could be implemented to avoid user error. Make input be kinetic rate constants, and calculate stochastic rate constants from system size.
